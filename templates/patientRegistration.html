@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration</title>
+   
+    <style>
+        body{
+            background-color:#5286F3;
+            font-size:14px;
+            color:#fff;
+        }
+        </style>
+</head>
+<body>
+
+<div class="container">
+   
+            <form class="form-horizontal" role="form" method="POST" action="/patientRegistration">
+                <h2 class="d-flex justify-content-center">PATIENT REGISTRATION</h2><br>
+                <div class="form-group">
+                    <label for="ssnId" class="col-sm-3 control-label">SSN ID*</label>
+                    <div class="col-sm-9">
+                        <input type="number" name="ssnId" placeholder="SSN ID" class="form-control" autofocus>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Patient Name*</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="name" placeholder="Patient Name" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="age" class="col-sm-3 control-label">Patient Age*</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="age" placeholder="Patient Age" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="birthDate" class="col-sm-3 control-label">Date of Admission*</label>
+                    <div class="col-sm-9">
+                        <input type="date" name="birthDate" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="typeOfBed" class="col-sm-3 control-label">Type Of Bed*</label>
+                    <div class="col-sm-9">
+                        <select name="typeOfBed" class="form-control">
+                            <option>General ward</option>
+                            <option>Semi sharing</option>
+                            <option>Single room</option>
+                        </select>
+                    </div>
+                </div> 
+
+                <div class="form-group">
+                    <label for="address" name="address" class="col-sm-3 control-label">Address*</label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" name="address" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="state" class="col-sm-3 control-label">State*</label>
+                    <div class="col-sm-9">
+                        <select name="state" class="form-control">
+                            <option>TamilNadu</option>
+                        </select>
+                    </div>
+                </div> 
+
+                <div class="form-group">
+                    <label for="city" class="col-sm-3 control-label">City*</label>
+                    <div class="col-sm-9">
+                        <select name="city" class="form-control">
+                            <option>Chennai</option>
+                        </select>
+                    </div>
+                </div> 
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <input type="submit" class="btn btn-success btn-lg"></input>
+                        <button type="button" class="btn btn-danger  btn-lg">Reset</button>
+                    </div>
+                </div>
+            </form> <!-- /form -->
+        </div> <!-- ./container -->
+</body>
+</html>

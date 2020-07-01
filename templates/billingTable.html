@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Patient</title>
+    <style>
+        body{
+            background-color:#5286F3;
+            font-size:14px;
+            color:#fff;
+        }
+        </style>
+</head>
+<body>
+<div class="container">
+        <h2 class="d-flex justify-content-center">VIEW PATIENTS</h2><br>
+        <form action="/admissionHome" method="POST">
+            <button type="submit" class="btn btn-success">HOME</button>
+
+        
+        </form>
+        <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">SSNID</th>
+                <th scope="col">PATIENT NAME</th>
+                <th scope="col">AGE</th>
+                <th scope="col">DATE OF JOINING</th>
+                <th scope="col">TYPE OF ROOM</th>
+                <th scope="col">ADDRESS</th>
+              </tr>
+            </thead>
+                {%for i in range(leng)%}
+                <tr> 
+                {%for row in data[i]%}
+                <td>{{row}}</td>
+                {%endfor%}
+                </tr>
+                {%endfor%}
+            </tbody>
+          </table>
+</div>
+</body>     
+</html>
+
