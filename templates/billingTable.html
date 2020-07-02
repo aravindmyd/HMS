@@ -3,26 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <title>BILLING TABLE</title>
-    <style>
-        
-        </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
 </head>
 <body>
     <form action="/admissionHome" method="POST">
         <button type="submit" class="btn btn-success">HOME</button>
     </form>
+    <div style="text-align:center"><h2>PATIENT BILLING</h2></div>
     <!-- PATIENT TABLE--->
     <div>
-        <br>
-        <centre><h2>PATIENT BILLING</h2></centre>
+        
         <div>  
-            <h2>PATIENT DATA</h2>      
-            <table class="table table-striped">
-            <thead>
+            <div style="text-align:center">   <h2>PATIENT DATA</h2></div><br>      
+            <table class="table">
+            <thead class="thead-dark">
             <tr>
                 <th scope="col" name = "ssnId">SSNID</th>
                 <th scope="col">PATIENT NAME</th>
@@ -42,9 +38,9 @@
     </div>
     <!-- PHARMACY TABLE--->
     <div>
-        <h2>MEDICINE ISSUED</h2>      
-        <table class="table table-striped">
-        <thead>
+        <div style="text-align:center">    <h2>MEDICINE ISSUED</h2>      </div><br>
+        <table class="table">
+            <thead class="thead-dark">
         <tr>
             <th scope="col">MEDICINE</th>
             <th scope="col">QUANTITY</th>
@@ -63,9 +59,9 @@
       </table>    
     <!-- DIAGNOSTIC TABLE--->
     <div>
-        <h2>DIAGNOSTIC CONDUCTED</h2>      
-        <table class="table table-striped">
-        <thead>
+        <div style="text-align:center"> <h2>DIAGNOSTIC CONDUCTED</h2>      </div><br>
+        <table class="table">
+            <thead class="thead-dark">
         <tr>
             <th scope="col">NAME OF THE TEST</th>
             <th scope="col">AMOUNT</th>
@@ -81,11 +77,13 @@
         </tbody>
       </table>    
     </div>
-    <h2>Total Amount Payable : {{total_charge}}</h2>
+    <br><h1>Total Amount Payable : {{total_charge}}</h1>
     
-    <form action="/payBill" method="POST"><button type="submit">PAY</button class="btn btn-danger">
+    <div style="text-align:center">
+    <form action="/payBill" method="POST"><button type="submit" class="btn btn-danger btn-lg btn-lg">PAY</button >
         <input type ="text" name = "ssnId" id="ssnId" value={{patient_data[0]}} hidden="true"></input>
     </form>
+</div>
 </body>     
 </html>
 

@@ -12,7 +12,8 @@
       <button type="submit" class="btn btn-success">HOME</button>
   </form>
 <div>  
-    <h2>PATIENT DATA</h2>      
+  <div style="text-align:center">   <h2>PATIENT DATA</h2>    </div>  <br>
+
     <table class="table table-striped">
     <thead>
     <tr>
@@ -33,7 +34,7 @@
 </div>
 <!--MEDICINE ISSUED-->
 <div>
-    <h2>MEDICINE ISSUED</h2>      
+   <div style="text-align:center"> <h2>MEDICINE ISSUED</h2>     </div><br>
     <table class="table table-striped">
     <thead>
     <tr>
@@ -52,12 +53,7 @@
         {%endfor%}
     </tbody>
   </table>    
-      <centre>
-        <form action="/" method="POST">
-          <input type ="text" name = "ssnId" id="ssnId" value={{patient_data[0]}} hidden="true"></input>
-          <button type="submit">Home</button>
-        </form>
-      </centre>
+     
 </div>
 </body>
 </html>

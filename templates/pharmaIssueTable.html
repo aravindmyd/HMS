@@ -12,7 +12,7 @@
 </form>
     <!--PATIENT DATA-->
 <div>  
-    <h2>PATIENT DATA</h2>      
+  <div style="text-align:center"> <h2>PATIENT DATA</h2>    </div><br>  
     <table class="table table-striped">
     <thead>
     <tr>
@@ -33,7 +33,7 @@
 </div>
 <!--MEDICINE ISSUED-->
 <div>
-    <h2>MEDICINE ISSUED</h2>      
+  <div class="container"> <h2>MEDICINE ISSUED</h2></div><br>      
     <table class="table table-striped">
     <thead>
     <tr>
@@ -55,7 +55,10 @@
       <centre>
         <form action="/issueMedicine" method="POST">
           <input type ="text" name = "ssnId" id="ssnId" value={{patient_data[0]}} hidden="true"></input>
-          <button type="submit">Issue Medicine</button>
+          <div style="text-align:center">
+            <button type="submit" class="btn btn-danger btn-lg">Issue Medicine</button>
+          </div>
+        </div>
         </form>
       </centre>
 </div>

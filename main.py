@@ -231,6 +231,7 @@ def billingPatient():
             medicine_data.append([i[0], charge[0]])
         for i in medicine_data:
             total_diagnositc_amount += float(i[1])
+            total_diagnositc_amount += float(i[1])
         #Calcuation for total charge
 
         #Calculation for total number of days

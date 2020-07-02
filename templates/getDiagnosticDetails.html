@@ -1,17 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Patient</title>
+    <style>
+        body{
+            background-color:#5286F3;
+            font-size:14px;
+            color:#fff;
+        }
+        </style>
     <title>ISSUE MEDICINE - PHARMACIST</title>
 </head>
 <body> 
     <form action="/diagnosticHome" method="POST">
         <button type="submit" class="btn btn-success">HOME</button>
     </form>
-    <form action="/getDiagnosticDetails" method="POST">
-        <input type="text" name = "ssnId" placeholder="ssnId">
-        <button type="submit">GET</button>
-    </form>
+    <form class="form-horizontal" role="form" action="/getDiagnosticDetails" method="POST">
+        <div class="form-group">
+            <label for="ssnId" class="col-sm-3 control-label">SSN ID*</label>
+            <div class="col-sm-4">
+                <input type="number" name="ssnId" placeholder="SSN ID" class="form-control" autofocus><br>
+                <button type="submit" class="btn btn-warning btn-lg">GET</button>
+            </div>
+        </div>
+        </form> <!-- /form -->
+
 </body>
 </html>
