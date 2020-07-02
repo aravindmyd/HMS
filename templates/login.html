@@ -33,8 +33,16 @@
     </style>
 </head>
 <body>
+{%with messages = get_flashed_messages()%}
+	{% if messages%}
+		{% for msg in messages%}
+        <div class="alert alert-danger" role="alert">
+            {{msg}}
+          </div>
+		{%endfor%}
+	{%endif%}
+{%endwith%}
 <div class="simple-login-container">
-    <center>
     <br>
     <h2>HOSPITAL MANAGEMENT SYSTEM</h2><br>
     <form action="{{ url_for('login') }}" method="post">
@@ -63,7 +71,6 @@
         <input type="submit" value="Login" class="btn btn-block btn-login">
         </div>
     </div></form>
-</center>
 </div>
 
 </body>
