@@ -168,7 +168,13 @@ def viewPatient():
 def admissionHome():
     return render_template('admissionHomePage.html')
 
+@app.route('/pharmacistHome', methods=['POST'])
+def pharmacistHome():
+    return render_template('pharmacistHomePage.html')
 
+@app.route('/diagnosticHome', methods=['POST'])
+def diagnosticHome():
+    return render_template('diagnosticHomePage.html')
 @app.route('/billingPatient', methods=['POST'])
 def billingPatient():
     if request.method == 'POST':
@@ -233,9 +239,11 @@ def billingPatient():
         today = datetime.date.today()
         someday = datetime.date(int(data[0]), int(data[1]), int(data[2]))
         diff = someday - today
-        total_days = diff.days+2
+        total_days = abs(diff.days)
+        total_days+=1
         #Calculation of rent
         room_rent = 0
+        print(total_days)
         if tob== 'General ward':
             room_rent = total_days * 2000
         elif tob== 'Semi sharing':
