@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISSUE MEDICINE - PHARMACIST</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<body>
+<div>  
+    <h2>ISSUE MEDICINE</h2>
+        Medicines: 
+    <form action="/getQuantity" method = "POST">
+        <input type="text" name="srch" id="srch" list="datalist1">
+        <datalist id="datalist1">
+        {%for medicine in medicines%}
+        <option value={{medicine}}>
+        {%endfor%}
+        </datalist>
+        Quantity
+        <input type="number" name="qty" id="qty">
+        <input type="number" name="ssnId" id="ssnId" value={{patient}} hidden>
+        <button type="submit">Issue</button>
+    </form>
+</div>
+    
+</body>
+</html>

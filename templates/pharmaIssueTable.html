@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISSUE MEDICINE - PHARMACIST</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <!--PATIENT DATA-->
+<div>  
+    <h2>PATIENT DATA</h2>      
+    <table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col" name = "ssnId">SSNID</th>
+        <th scope="col">PATIENT NAME</th>
+        <th scope="col">AGE</th>
+        <th scope="col">DATE OF JOINING</th>
+        <th scope="col">TYPE OF ROOM</th>
+        <th scope="col">ADDRESS</th>
+      </tr>
+    </thead>
+        {%for row in patient_data%}
+        <td>{{row}}</td>
+        {%endfor%}
+        </tr>
+    </tbody>
+  </table>    
+</div>
+<!--MEDICINE ISSUED-->
+<div>
+    <h2>MEDICINE ISSUED</h2>      
+    <table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">MEDICINE</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">RATE</th>
+        <th scope="col">AMOUNT</th>
+      </tr>
+    </thead>
+        {%for row in medicine_issued%}
+        <tr>
+        {%for col in row%}
+        <td>{{col}}</td>
+        {%endfor%}
+        </tr>
+        {%endfor%}
+    </tbody>
+  </table>    
+      <centre>
+        <form action="/issueMedicine" method="POST">
+          <input type ="text" name = "ssnId" id="ssnId" value={{patient_data[0]}} hidden="true"></input>
+          <button type="submit">Issue Medicine</button>
+        </form>
+      </centre>
+</div>
+</body>
+</html>

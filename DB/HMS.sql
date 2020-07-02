@@ -53,5 +53,29 @@ CREATE TABLE IF NOT EXISTS `medicineMaster` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 insert into medicineMaster values(3,"Tonic","1500","122");
 select * from medicineMaster;
+CREATE TABLE IF NOT EXISTS `medicinePatient` (
+	`medicineId` int(11) NOT NULL,
+    `patientId` varchar(50) NOT NULL,
+  	`medicineName` varchar(50) NOT NULL,
+  	`qty` varchar(255) NOT NULL,
+  	`rate` varchar(100) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-select qty,medicineName from medicineMaster where medicineName = 'Paracetomol'
+CREATE TABLE IF NOT EXISTS `diagnosticMaster` (
+	`testId` int(11) NOT NULL AUTO_INCREMENT,
+  	`testName` varchar(50) NOT NULL,
+  	`charge` varchar(255) NOT NULL,
+    PRIMARY KEY (`testId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `diagnosticPatient` (
+	`testId` int(11) NOT NULL,
+  	`patientId` varchar(50) NOT NULL,
+    `testName` varchar(50) NOT NULL,
+      `charges` varchar(50) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+select * from diagnosticPatient;
+select * from diagnosticMaster;
+Insert into diagnosticPatient values(2,"123456789");
+drop table diagnosticPatient;
