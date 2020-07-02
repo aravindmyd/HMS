@@ -172,17 +172,82 @@ def admissionHome():
 @app.route('/billingPatient', methods=['POST'])
 def billingPatient():
     if request.method == 'POST':
+        #PATIENT DATA
         ssnId = request.form['ssnId']
         conn = mysql.connect
         cur = conn.cursor()
         cur.execute(f'select * from patients where ssnId = {ssnId}')
         data = cur.fetchone()
+        doj = data[4]
+        tob = data[5]
         mod_data = []
         for i in range(len(data)):
             if i not in [0, 7, 8, 9]:
                 mod_data.append(data[i])
-        return render_template("billingTable.html", pat_data=mod_data)
-    return render_template('admissionHomePage.html')
+
+        #MEDICINE DATA
+        total_medicine_amount = 0
+        cur.execute(f'select * from patients where ssnId = {ssnId}')
+        patient_data = cur.fetchone()
+        mod_data_med = []
+        for i in range(len(patient_data)):
+            if i not in [0, 7, 8, 9]:
+                mod_data_med.append(patient_data[i])
+        # medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
+        cur.execute(f'select * from medicinePatient where patientId = {ssnId}')
+        pat = cur.fetchall()
+        no_need = [0, 1]
+        medicine_data_med = []
+        for record in pat:
+            ls = []
+            for item in range(len(record)):
+                if item not in no_need:
+                    if item == 4:
+                        ls.append(f"RS.{float(record[4]) / float(record[3])}")
+                    ls.append(record[item])
+            medicine_data_med.append(ls)
+        for i in medicine_data_med:
+            total_medicine_amount += float(i[3])
+        #DIAGNOSTIC DATA
+        total_diagnositc_amount = 0
+        cur.execute(f'select * from patients where ssnId = {ssnId}')
+        patient_data = cur.fetchone()
+        mod_data_diag = []
+        for i in range(len(patient_data)):
+            if i not in [0, 7, 8, 9]:
+                mod_data_diag.append(patient_data[i])
+        cur.execute(f'select testName from diagnosticPatient where patientId = {ssnId}')
+        pat = cur.fetchall()
+        medicine_data = []
+        for i in pat:
+            cur.execute(f'select charge from diagnosticMaster where testName ="{i[0]}"')
+            charge = cur.fetchone()
+            medicine_data.append([i[0], charge[0]])
+        for i in medicine_data:
+            total_diagnositc_amount += float(i[1])
+        #Calcuation for total charge
+
+        #Calculation for total number of days
+        import datetime
+        data = doj.split('-')
+        today = datetime.date.today()
+        someday = datetime.date(int(data[0]), int(data[1]), int(data[2]))
+        diff = someday - today
+        total_days = diff.days+2
+        #Calculation of rent
+        room_rent = 0
+        if tob== 'General ward':
+            room_rent = total_days * 2000
+        elif tob== 'Semi sharing':
+            room_rent = total_days * 4000
+        elif tob== 'Single Room':
+            room_rent = total_days * 8000
+        room_rent = abs(room_rent)
+        print(room_rent,"room rent")
+        print(total_medicine_amount,"pharmacy amount")
+        print(total_diagnositc_amount,"diagnostic amount")
+        total_charge = room_rent + total_diagnositc_amount + total_medicine_amount
+        return render_template("billingTable.html", patient_data=mod_data,diagnostic_conducted=medicine_data,medicine_issued = medicine_data_med,total_charge = total_charge)
 
 
 @app.route('/payBill', methods=['POST'])
@@ -224,7 +289,7 @@ def pharmacistIssue():
                         ls.append(f"RS.{float(record[4]) / float(record[3])}")
                     ls.append(record[item])
             medicine_data.append(ls)
-        print(medicine_data)
+
         return render_template('pharmaIssueTable.html',patient_data = mod_data,leng=len(mod_data),medicine_issued=medicine_data)
     return "Pharmacist Issue"
 
@@ -334,7 +399,6 @@ def issueDiagnostic():
     tests = []
     for row in medi:
         tests.append(row[0])
-    print(tests)
     return render_template('issueDiagnostic.html',tests = tests,patient = patient_data)
 
 @app.route('/getDiagnostic',methods = ['POST'])
@@ -372,6 +436,7 @@ def getDiagnosticDetails():
             cur.execute(f'select charge from diagnosticMaster where testName ="{i[0]}"')
             charge = cur.fetchone()
             medicine_data.append([i[0],charge[0]])
+
         return render_template('diagnosticViewTable.html',patient_data = mod_data,leng=len(mod_data),diagnostic_conducted=medicine_data)
     return "Diagnostic Issue"
 

@@ -1,54 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BILLING TABLE</title>
-    <style>
-        body{
-            background-color:#5286F3;
-            font-size:14px;
-            color:#fff;
-        }
-        </style>
 </head>
 <body>
     <form action="/admissionHome" method="POST">
         <button type="submit" class="btn btn-success">HOME</button>
     </form>
     <!-- PATIENT TABLE--->
-    <div class="container">
-        
-        <table class="table">
-            <h2 >BILLING TABLE</h2><br>
-            <thead class="thead-dark">
-              <tr>
-                <th scope="col">SSNID</th>
+    <div>
+        <br>
+        <centre><h2>PATIENT BILLING</h2></centre>
+        <div>  
+            <h2>PATIENT DATA</h2>      
+            <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col" name = "ssnId">SSNID</th>
                 <th scope="col">PATIENT NAME</th>
                 <th scope="col">AGE</th>
                 <th scope="col">DATE OF JOINING</th>
                 <th scope="col">TYPE OF ROOM</th>
                 <th scope="col">ADDRESS</th>
               </tr>
-              <tr>
-                    {%for i in pat_data%}
-                    <td>{{i}}</td>
-                    {%endfor%}           
-                </tr>NO.Of Days: {{pat_data[5]}}   Charges: {{pat_data[4]}}
-               
-    </div>  
+            </thead>
+                {%for row in patient_data%}
+                <td>{{row}}</td>
+                {%endfor%}
+                </tr>
+            </tbody>
+          </table>    
+        </div>
+    </div>
     <!-- PHARMACY TABLE--->
     <div>
-      
-    </div>
+        <h2>MEDICINE ISSUED</h2>      
+        <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">MEDICINE</th>
+            <th scope="col">QUANTITY</th>
+            <th scope="col">RATE</th>
+            <th scope="col">AMOUNT</th>
+          </tr>
+        </thead>
+            {%for row in medicine_issued%}
+            <tr>
+            {%for col in row%}
+            <td>{{col}}</td>
+            {%endfor%}
+            </tr>
+            {%endfor%}
+        </tbody>
+      </table>    
     <!-- DIAGNOSTIC TABLE--->
     <div>
-      
+        <h2>DIAGNOSTIC CONDUCTED</h2>      
+        <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">NAME OF THE TEST</th>
+            <th scope="col">AMOUNT</th>
+          </tr>
+        </thead>
+            {%for row in diagnostic_conducted%}
+            <tr>
+            {%for col in row%}
+            <td>{{col}}</td>
+            {%endfor%}
+            </tr>
+            {%endfor%}
+        </tbody>
+      </table>    
     </div>
-    <form action="/payBill" method="POST"><button type="submit">PAY</button class="btn btn-danger"> GRAND TOTAL: {{pat_data[3]}}</form>
+    <h2>Total Amount Payable : {{total_charge}}</h2>
+    <form action="/payBill" method="POST"><button type="submit">PAY</button class="btn btn-danger"></form>
 </body>     
 </html>
 
