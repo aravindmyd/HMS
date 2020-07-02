@@ -6,7 +6,7 @@
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Patient</title>
+    <title>BILLING TABLE</title>
     <style>
         body{
             background-color:#5286F3;
@@ -16,14 +16,14 @@
         </style>
 </head>
 <body>
-<div class="container">
-        <h2 class="d-flex justify-content-center">VIEW PATIENTS</h2><br>
-        <form action="/admissionHome" method="POST">
-            <button type="submit" class="btn btn-success">HOME</button>
-
+    <form action="/admissionHome" method="POST">
+        <button type="submit" class="btn btn-success">HOME</button>
+    </form>
+    <!-- PATIENT TABLE--->
+    <div class="container">
         
-        </form>
         <table class="table">
+            <h2 >BILLING TABLE</h2><br>
             <thead class="thead-dark">
               <tr>
                 <th scope="col">SSNID</th>
@@ -33,17 +33,22 @@
                 <th scope="col">TYPE OF ROOM</th>
                 <th scope="col">ADDRESS</th>
               </tr>
-            </thead>
-                {%for i in range(leng)%}
-                <tr> 
-                {%for row in data[i]%}
-                <td>{{row}}</td>
-                {%endfor%}
-                </tr>
-                {%endfor%}
-            </tbody>
-          </table>
-</div>
+              <tr>
+                    {%for i in pat_data%}
+                    <td>{{i}}</td>
+                    {%endfor%}           
+                </tr>NO.Of Days: {{pat_data[5]}}   Charges: {{pat_data[4]}}
+               
+    </div>  
+    <!-- PHARMACY TABLE--->
+    <div>
+      
+    </div>
+    <!-- DIAGNOSTIC TABLE--->
+    <div>
+      
+    </div>
+    <form action="/payBill" method="POST"><button type="submit">PAY</button class="btn btn-danger"> GRAND TOTAL: {{pat_data[3]}}</form>
 </body>     
 </html>
 

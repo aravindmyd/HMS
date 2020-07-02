@@ -1,5 +1,3 @@
-from pydoc import render_doc
-
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
@@ -49,7 +47,7 @@ def login():
             if option == "admission":
                 return render_template('admissionHomePage.html')
             elif option == "pharmacist":
-                return "Pharmist"
+                return render_template('pharmacistHomePage.html')
             elif option == "diagnostic":
                 return "diagnostic"
 
@@ -135,7 +133,8 @@ def putData(ssnId):
         return render_template('admissionHomePage.html')
     return "Updated"
 
-@app.route('/deletePatient',methods=['POST'])
+
+@app.route('/deletePatient', methods=['POST'])
 def deletePatient():
     if request.method == 'POST':
         ssnId = request.form['ssnId']
@@ -146,7 +145,8 @@ def deletePatient():
         flash("Patient Record deleted Succesfully!")
     return render_template('admissionHomePage.html')
 
-@app.route('/viewPatient',methods=['POST'])
+
+@app.route('/viewPatient', methods=['POST'])
 def viewPatient():
     if request.method == 'POST':
         ssnId = request.form['ssnId']
@@ -156,7 +156,7 @@ def viewPatient():
         patients = cur.fetchall()
         print(patients)
         modified_ls = []
-        no_need = [0, 7, 8,9]
+        no_need = [0, 7, 8, 9]
         for i in patients:
             ls = []
             for j in range(len(i)):
@@ -165,12 +165,15 @@ def viewPatient():
 
             modified_ls.append(ls)
             print(modified_ls)
-    return render_template('patientTable.html',data=modified_ls,leng=len(modified_ls))
-@app.route('/admissionHome',methods=['POST'])
+    return render_template('patientTable.html', data=modified_ls, leng=len(modified_ls))
+
+
+@app.route('/admissionHome', methods=['POST'])
 def admissionHome():
     return render_template('admissionHomePage.html')
 
-@app.route('/billingPatient',methods = ['POST'])
+
+@app.route('/billingPatient', methods=['POST'])
 def billingPatient():
     if request.method == 'POST':
         ssnId = request.form['ssnId']
@@ -178,9 +181,70 @@ def billingPatient():
         cur = conn.cursor()
         cur.execute(f'select * from patients where ssnId = {ssnId}')
         data = cur.fetchone()
-
-        return render_template("billingTable.html",data = data)
+        mod_data = []
+        for i in range(len(data)):
+            if i not in [0, 7, 8, 9]:
+                mod_data.append(data[i])
+        print(mod_data)
+        return render_template("billingTable.html", pat_data=mod_data)
     return render_template('admissionHomePage.html')
+
+
+@app.route('/payBill', methods=['POST'])
+def payBill():
+    return render_template('admissionHomePage.html')
+
+#PHARMIST FUNCTIONS
+@app.route("/pharmacistOption", methods=['GET', 'POST'])
+def pharmacistOption():
+    if request.method == 'POST':
+        optionData = request.form['pharmacist']
+        print(optionData)
+        if optionData == 'IssueMedicine':
+            return render_template('pharmacistIssue.html')
+        elif optionData == 'GetPatientDetails':
+            return render_template('pharmacistPatient.html')
+
+@app.route('/pharmacistIssue',methods = ['POST'])
+def pharmacistIssue():
+    if request.method == 'POST':
+        ssnId = request.form['ssnId']
+        conn = mysql.connect
+        cur = conn.cursor()
+        cur.execute(f'select * from patients where ssnId = {ssnId}')
+        patient_data = cur.fetchone()
+        mod_data = []
+        for i in range(len(patient_data)):
+            if i not in [0, 7, 8, 9]:
+                mod_data.append(patient_data[i])
+        medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
+        return render_template('pharmaIssueTable.html',patient_data = mod_data,leng=len(mod_data),medicine_issued=medicine_data)
+    return "Pharmacist Issue"
+
+@app.route('/issueMedicine',methods = ['POST'])
+def issueMedicine():
+    conn = mysql.connect
+    cur = conn.cursor()
+    cur.execute(f'select medicineName from medicineMaster')
+    medi = cur.fetchall()
+    medicines = []
+    for row in medi:
+        medicines.append(row[0])
+    print(medicines)
+    return render_template('issueMedicine.html',medicines = medicines)
+@app.route('/getQuantity',methods = ['POST'])
+def getQuantity():
+    if request.method == 'POST':
+        qty = request.form['qty']
+        medicine = request.form['srch']
+        conn = mysql.connect
+        cur = conn.cursor()
+        print(medicine)
+        cur.execute(f'select qty,medicineName from medicineMaster where medicineName = "{medicine}"')
+        available_qty = cur.fetchone()[0]
+        if qty<=available_qty:
+           return render_template("")
+    return "available"
 
 if __name__ == '__main__':
     app.run(debug=True)
