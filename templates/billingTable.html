@@ -76,7 +76,10 @@
       </table>    
     </div>
     <h2>Total Amount Payable : {{total_charge}}</h2>
-    <form action="/payBill" method="POST"><button type="submit">PAY</button class="btn btn-danger"></form>
+    
+    <form action="/payBill" method="POST"><button type="submit">PAY</button class="btn btn-danger">
+        <input type ="text" name = "ssnId" id="ssnId" value={{patient_data[0]}} hidden="true"></input>
+    </form>
 </body>     
 </html>
 

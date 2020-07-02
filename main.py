@@ -252,6 +252,13 @@ def billingPatient():
 
 @app.route('/payBill', methods=['POST'])
 def payBill():
+    if request.method == 'POST':
+        conn = mysql.connect
+        cur = conn.cursor()
+        ssnId = request.form['ssnId']
+        cur.execute(f'update patients set status = "discharged" where ssnId={ssnId}')
+        conn.commit()
+        flash("Patient Discharged")
     return render_template('admissionHomePage.html')
 
 #PHARMIST FUNCTIONS
