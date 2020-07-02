@@ -6,7 +6,7 @@ from datetime import datetime
 now = datetime.now()
 app = Flask(__name__)
 
-app.secret_key = 'sdfasdfasdbasfbhadsbfjasdnfjasdufh asdkfn'
+app.secret_key = 'sdfasdfasdbasfbhadsbfjasdnfjasdufhasdkfn'
 
 #Database Details
 app.config['MYSQL_HOST'] = 'localhost'
@@ -45,7 +45,6 @@ def login():
             elif option == "diagnostic":
                 flash(msg)
                 return render_template('diagnosticHomePage.html')
-
         else:
             msg = 'Incorrect username/password!'
             flash(msg)
@@ -82,27 +81,36 @@ def registerpatient():
         status = "active"
         conn = mysql.connect
         cur = conn.cursor()
-        cur.execute(
-            f"Insert into patients(ssnId,patientName,patientAge,DOJ,TOB,address,city,state,status) values('{ssnId}','{patientName}','{patientAge}','{DOJ}','{TOB}','{address}','{city}','{state}','{status}');")
-        # insert into patients(ssnId,patientName,patientAge,DOJ,TOB,address,city,state,status) values(4545,"naveen",45,45/05/1998,"semi","adsfasdfadsfadsf fadsfasd fasdf ","chennai","tamilcadu","active");
-        conn.commit()
-        flash("Inserted")
-        return render_template('admissionHomePage.html')
-
+        if patientName!="" and patientAge!="" and DOJ!="" and TOB!="" and address!="" and state!="" and city!="":
+            cur.execute(
+                f"Insert into patients(ssnId,patientName,patientAge,DOJ,TOB,address,city,state,status) values('{ssnId}','{patientName}','{patientAge}','{DOJ}','{TOB}','{address}','{city}','{state}','{status}');")
+            # insert into patients(ssnId,patientName,patientAge,DOJ,TOB,address,city,state,status) values(4545,"naveen",45,45/05/1998,"semi","adsfasdfadsfadsf fadsfasd fasdf ","chennai","tamilcadu","active");
+            conn.commit()
+            flash("Patient Registered Successfully!")
+            return render_template('admissionHomePage.html')
+        else:
+            flash("Enter all the necessary Fields")
+            return redirect(url_for('admissionHome'))
     return "Registered"
 
 
-@app.route('/getData', methods=['POST'])
+@app.route('/getData', methods=['POST','GET'])
 def getData():
     if request.method == "POST":
         ssnId = request.form['ssnId']
         conn = mysql.connect
         cur = conn.cursor()
-        cur.execute(f'select * from patients where ssnId = {ssnId}')
-        patient = cur.fetchone()
+        res = cur.execute(f'select * from patients where ssnId = {ssnId}')
+        if res == 1:
+            patient = cur.fetchone()
+            return render_template('updatePatient.html', ssnId=patient[1], name=patient[2], age=patient[3],
+                                   doj=patient[4],
+                                   tob=patient[5], address=patient[6])
+        else:
+            flash("Incorrect SSNID!")
+            return redirect(url_for('admissionHome'))
         # (550, '123456789', 'AV', '22', '2019-10-30', 'Single room', 'Thiruvalluvar Nagar', 'Chennai', 'TamilNadu', 'active')
-    return render_template('updatePatient.html', ssnId=patient[1], name=patient[2], age=patient[3], doj=patient[4],
-                           tob=patient[5], address=patient[6])
+
 
 
 @app.route('/putData/<ssnId>', methods=['POST'])
@@ -120,7 +128,7 @@ def putData(ssnId):
         cur.execute(
             f"UPDATE patients SET patientName='{patientName}',patientAge='{patientAge}',DOJ='{DOJ}',TOB='{TOB}',address='{address}',city='{city}',state='{state}' where ssnId='{ssnId}'")
         conn.commit()
-        flash("Updated Succesfully")
+        flash("Patient details updated Succesfully!")
         return render_template('admissionHomePage.html')
     return "Updated"
 
@@ -131,7 +139,7 @@ def deletePatient():
         ssnId = request.form['ssnId']
         conn = mysql.connect
         cur = conn.cursor()
-        cur.execute(f'DELETE from patients where ssnId = {ssnId}')
+        res = cur.execute(f'DELETE from patients where ssnId = {ssnId}')
         conn.commit()
         flash("Patient Record deleted Succesfully!")
     return render_template('admissionHomePage.html')
@@ -152,20 +160,19 @@ def viewPatient():
             for j in range(len(i)):
                 if j not in no_need:
                     ls.append(i[j])
-
             modified_ls.append(ls)
     return render_template('patientTable.html', data=modified_ls, leng=len(modified_ls))
 
 
-@app.route('/admissionHome', methods=['POST'])
+@app.route('/admissionHome', methods=['POST','GET'])
 def admissionHome():
     return render_template('admissionHomePage.html')
 
-@app.route('/pharmacistHome', methods=['POST'])
+@app.route('/pharmacistHome', methods=['POST','GET'])
 def pharmacistHome():
     return render_template('pharmacistHomePage.html')
 
-@app.route('/diagnosticHome', methods=['POST'])
+@app.route('/diagnosticHome', methods=['POST','GET'])
 def diagnosticHome():
     return render_template('diagnosticHomePage.html')
 @app.route('/billingPatient', methods=['POST'])
@@ -175,82 +182,85 @@ def billingPatient():
         ssnId = request.form['ssnId']
         conn = mysql.connect
         cur = conn.cursor()
-        cur.execute(f'select * from patients where ssnId = {ssnId}')
-        data = cur.fetchone()
-        doj = data[4]
-        tob = data[5]
-        mod_data = []
-        for i in range(len(data)):
-            if i not in [0, 7, 8, 9]:
-                mod_data.append(data[i])
+        res = cur.execute(f'select * from patients where ssnId = {ssnId}')
+        if res == 1:
+            data = cur.fetchone()
+            doj = data[4]
+            tob = data[5]
+            mod_data = []
+            for i in range(len(data)):
+                if i not in [0, 7, 8, 9]:
+                    mod_data.append(data[i])
 
-        #MEDICINE DATA
-        total_medicine_amount = 0
-        cur.execute(f'select * from patients where ssnId = {ssnId}')
-        patient_data = cur.fetchone()
-        mod_data_med = []
-        for i in range(len(patient_data)):
-            if i not in [0, 7, 8, 9]:
-                mod_data_med.append(patient_data[i])
-        # medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
-        cur.execute(f'select * from medicinePatient where patientId = {ssnId}')
-        pat = cur.fetchall()
-        no_need = [0, 1]
-        medicine_data_med = []
-        for record in pat:
-            ls = []
-            for item in range(len(record)):
-                if item not in no_need:
-                    if item == 4:
-                        ls.append(f"RS.{float(record[4]) / float(record[3])}")
-                    ls.append(record[item])
-            medicine_data_med.append(ls)
-        for i in medicine_data_med:
-            total_medicine_amount += float(i[3])
-        #DIAGNOSTIC DATA
-        total_diagnositc_amount = 0
-        cur.execute(f'select * from patients where ssnId = {ssnId}')
-        patient_data = cur.fetchone()
-        mod_data_diag = []
-        for i in range(len(patient_data)):
-            if i not in [0, 7, 8, 9]:
-                mod_data_diag.append(patient_data[i])
-        cur.execute(f'select testName from diagnosticPatient where patientId = {ssnId}')
-        pat = cur.fetchall()
-        medicine_data = []
-        for i in pat:
-            cur.execute(f'select charge from diagnosticMaster where testName ="{i[0]}"')
-            charge = cur.fetchone()
-            medicine_data.append([i[0], charge[0]])
-        for i in medicine_data:
-            total_diagnositc_amount += float(i[1])
-            total_diagnositc_amount += float(i[1])
-        #Calcuation for total charge
+            #MEDICINE DATA
+            total_medicine_amount = 0
+            cur.execute(f'select * from patients where ssnId = {ssnId}')
+            patient_data = cur.fetchone()
+            mod_data_med = []
+            for i in range(len(patient_data)):
+                if i not in [0, 7, 8, 9]:
+                    mod_data_med.append(patient_data[i])
+            # medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
+            cur.execute(f'select * from medicinePatient where patientId = {ssnId}')
+            pat = cur.fetchall()
+            no_need = [0, 1]
+            medicine_data_med = []
+            for record in pat:
+                ls = []
+                for item in range(len(record)):
+                    if item not in no_need:
+                        if item == 4:
+                            ls.append(f"RS.{float(record[4]) / float(record[3])}")
+                        ls.append(record[item])
+                medicine_data_med.append(ls)
+            for i in medicine_data_med:
+                total_medicine_amount += float(i[3])
+            #DIAGNOSTIC DATA
+            total_diagnositc_amount = 0
+            cur.execute(f'select * from patients where ssnId = {ssnId}')
+            patient_data = cur.fetchone()
+            mod_data_diag = []
+            for i in range(len(patient_data)):
+                if i not in [0, 7, 8, 9]:
+                    mod_data_diag.append(patient_data[i])
+            cur.execute(f'select testName from diagnosticPatient where patientId = {ssnId}')
+            pat = cur.fetchall()
+            medicine_data = []
+            for i in pat:
+                cur.execute(f'select charge from diagnosticMaster where testName ="{i[0]}"')
+                charge = cur.fetchone()
+                medicine_data.append([i[0], charge[0]])
+            for i in medicine_data:
+                total_diagnositc_amount += float(i[1])
+                total_diagnositc_amount += float(i[1])
+            #Calcuation for total charge
 
-        #Calculation for total number of days
-        import datetime
-        data = doj.split('-')
-        today = datetime.date.today()
-        someday = datetime.date(int(data[0]), int(data[1]), int(data[2]))
-        diff = someday - today
-        total_days = abs(diff.days)
-        total_days+=1
-        #Calculation of rent
-        room_rent = 0
-        print(total_days)
-        if tob== 'General ward':
-            room_rent = total_days * 2000
-        elif tob== 'Semi sharing':
-            room_rent = total_days * 4000
-        elif tob== 'Single Room':
-            room_rent = total_days * 8000
-        room_rent = abs(room_rent)
-        print(room_rent,"room rent")
-        print(total_medicine_amount,"pharmacy amount")
-        print(total_diagnositc_amount,"diagnostic amount")
-        total_charge = room_rent + total_diagnositc_amount + total_medicine_amount
-        return render_template("billingTable.html", patient_data=mod_data,diagnostic_conducted=medicine_data,medicine_issued = medicine_data_med,total_charge = total_charge)
-
+            #Calculation for total number of days
+            import datetime
+            data = doj.split('-')
+            today = datetime.date.today()
+            someday = datetime.date(int(data[0]), int(data[1]), int(data[2]))
+            diff = someday - today
+            total_days = abs(diff.days)
+            total_days+=1
+            #Calculation of rent
+            room_rent = 0
+            print(total_days)
+            if tob== 'General ward':
+                room_rent = total_days * 2000
+            elif tob== 'Semi sharing':
+                room_rent = total_days * 4000
+            elif tob== 'Single Room':
+                room_rent = total_days * 8000
+            room_rent = abs(room_rent)
+            print(room_rent,"room rent")
+            print(total_medicine_amount,"pharmacy amount")
+            print(total_diagnositc_amount,"diagnostic amount")
+            total_charge = room_rent + total_diagnositc_amount + total_medicine_amount
+            return render_template("billingTable.html", patient_data=mod_data,diagnostic_conducted=medicine_data,medicine_issued = medicine_data_med,total_charge = total_charge)
+        else:
+            flash("Invalid SSNID!")
+            return redirect(url_for('admissionHome'))
 
 @app.route('/payBill', methods=['POST'])
 def payBill():
@@ -258,10 +268,14 @@ def payBill():
         conn = mysql.connect
         cur = conn.cursor()
         ssnId = request.form['ssnId']
-        cur.execute(f'update patients set status = "discharged" where ssnId={ssnId}')
-        conn.commit()
-        flash("Patient Discharged")
-    return render_template('admissionHomePage.html')
+        res = cur.execute(f'update patients set status = "discharged" where ssnId={ssnId}')
+        if res == 1:
+            conn.commit()
+            flash("Patient Discharged!")
+            return render_template('admissionHomePage.html')
+        else:
+            flash("Invalid SSNID!")
+            return redirect(url_for('pharmacistHome'))
 
 #PHARMIST FUNCTIONS
 @app.route("/pharmacistOption", methods=['GET', 'POST'])
@@ -279,27 +293,30 @@ def pharmacistIssue():
         ssnId = request.form['ssnId']
         conn = mysql.connect
         cur = conn.cursor()
-        cur.execute(f'select * from patients where ssnId = {ssnId}')
-        patient_data = cur.fetchone()
-        mod_data = []
-        for i in range(len(patient_data)):
-            if i not in [0, 7, 8, 9]:
-                mod_data.append(patient_data[i])
-        #medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
-        cur.execute(f'select * from medicinePatient where patientId = {ssnId}')
-        pat = cur.fetchall()
-        no_need = [0, 1]
-        medicine_data = []
-        for record in pat:
-            ls = []
-            for item in range(len(record)):
-                if item not in no_need:
-                    if item == 4:
-                        ls.append(f"RS.{float(record[4]) / float(record[3])}")
-                    ls.append(record[item])
-            medicine_data.append(ls)
-
-        return render_template('pharmaIssueTable.html',patient_data = mod_data,leng=len(mod_data),medicine_issued=medicine_data)
+        res = cur.execute(f'select * from patients where ssnId = {ssnId}')
+        if res==1:
+            patient_data = cur.fetchone()
+            mod_data = []
+            for i in range(len(patient_data)):
+                if i not in [0, 7, 8, 9]:
+                    mod_data.append(patient_data[i])
+            #medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
+            cur.execute(f'select * from medicinePatient where patientId = {ssnId}')
+            pat = cur.fetchall()
+            no_need = [0, 1]
+            medicine_data = []
+            for record in pat:
+                ls = []
+                for item in range(len(record)):
+                    if item not in no_need:
+                        if item == 4:
+                            ls.append(f"RS.{float(record[4]) / float(record[3])}")
+                        ls.append(record[item])
+                medicine_data.append(ls)
+            return render_template('pharmaIssueTable.html',patient_data = mod_data,leng=len(mod_data),medicine_issued=medicine_data)
+        else:
+            flash("Invalid SSNID!")
+            return redirect(url_for('pharmacistHome'))
     return "Pharmacist Issue"
 
 @app.route('/issueMedicine',methods = ['POST'])
@@ -325,44 +342,51 @@ def getQuantity():
         cur.execute(f'select qty,medicineName,medicineId,rate from medicineMaster where medicineName = "{medicine}"')
         data = cur.fetchone()
         available_qty,medicine_name,medicine_id,rate = data
-        if qty<=available_qty:
-            flash("Item added to Patient's db")
+        if int(qty)<=int(available_qty):
             #Reduce the qty in master file.
+            print("one")
             cur.execute(f'update medicineMaster set qty = "{int(available_qty) - int(qty)}" where medicineName = "{medicine}"')
             conn.commit()
             #update the patient file.
-            cur.execute(f'Insert into medicinePatient values({medicine_id},"{ssnId}","{medicine_name}","{qty}","{float(rate)*int(qty)}");')
+            print("two")
+            cur.execute(f'Insert into medicinePatient values({medicine_id},"{ssnId}","{medicine_name}","{qty}","{float(rate)*float(qty)}");')
             conn.commit()
-            flash("Master DB and patient DB Updated")
+            flash("Medicines Added to the Cart!")
+            return redirect(url_for('pharmacistHome'))
         else:
             flash(f"No stock available. Only {available_qty} quantity available")
         return render_template('pharmacistHomePage.html')
+
 @app.route('/getPatientDetails',methods = ['POST'])
 def getPatientDetails():
     if request.method == 'POST':
         ssnId = request.form['ssnId']
         conn = mysql.connect
         cur = conn.cursor()
-        cur.execute(f'select * from patients where ssnId = {ssnId}')
-        patient_data = cur.fetchone()
-        mod_data = []
-        for i in range(len(patient_data)):
-            if i not in [0, 7, 8, 9]:
-                mod_data.append(patient_data[i])
-        #medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
-        cur.execute(f'select * from medicinePatient where patientId = {ssnId}')
-        pat = cur.fetchall()
-        no_need = [0, 1]
-        medicine_data = []
-        for record in pat:
-            ls = []
-            for item in range(len(record)):
-                if item not in no_need:
-                    if item == 4:
-                        ls.append(f"RS.{float(record[4]) / float(record[3])}")
-                    ls.append(record[item])
-            medicine_data.append(ls)
-        return render_template('patientViewTable.html',patient_data = mod_data,leng=len(mod_data),medicine_issued=medicine_data)
+        res = cur.execute(f'select * from patients where ssnId = {ssnId}')
+        if res == 1:
+            patient_data = cur.fetchone()
+            mod_data = []
+            for i in range(len(patient_data)):
+                if i not in [0, 7, 8, 9]:
+                    mod_data.append(patient_data[i])
+            #medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
+            cur.execute(f'select * from medicinePatient where patientId = {ssnId}')
+            pat = cur.fetchall()
+            no_need = [0, 1]
+            medicine_data = []
+            for record in pat:
+                ls = []
+                for item in range(len(record)):
+                    if item not in no_need:
+                        if item == 4:
+                            ls.append(f"RS.{float(record[4]) / float(record[3])}")
+                        ls.append(record[item])
+                medicine_data.append(ls)
+            return render_template('patientViewTable.html',patient_data = mod_data,leng=len(mod_data),medicine_issued=medicine_data)
+        else:
+            flash("Invalid SSNID!")
+            return redirect(url_for('pharmacistHome'))
     return "Pharmacist Issue"
 
 # DIAGNOSTIC FUNCTIONS
@@ -381,21 +405,25 @@ def diagnosticIssue():
         ssnId = request.form['ssnId']
         conn = mysql.connect
         cur = conn.cursor()
-        cur.execute(f'select * from patients where ssnId = {ssnId}')
-        patient_data = cur.fetchone()
-        mod_data = []
-        for i in range(len(patient_data)):
-            if i not in [0, 7, 8, 9]:
-                mod_data.append(patient_data[i])
-        #medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
-        cur.execute(f'select testName from diagnosticPatient where patientId = {ssnId}')
-        pat = cur.fetchall()
-        medicine_data = []
-        for i in pat:
-            cur.execute(f'select charge from diagnosticMaster where testName ="{i[0]}"')
-            charge = cur.fetchone()
-            medicine_data.append([i[0],charge[0]])
-        return render_template('diagnosticIssueTable.html',patient_data = mod_data,diagnostic_conducted=medicine_data)
+        res = cur.execute(f'select * from patients where ssnId = {ssnId}')
+        if res==1:
+            patient_data = cur.fetchone()
+            mod_data = []
+            for i in range(len(patient_data)):
+                if i not in [0, 7, 8, 9]:
+                    mod_data.append(patient_data[i])
+            #medicine_data = ["Paracetomol","100","Rs45","Rs4500"]
+            cur.execute(f'select testName from diagnosticPatient where patientId = {ssnId}')
+            pat = cur.fetchall()
+            medicine_data = []
+            for i in pat:
+                cur.execute(f'select charge from diagnosticMaster where testName ="{i[0]}"')
+                charge = cur.fetchone()
+                medicine_data.append([i[0],charge[0]])
+            return render_template('diagnosticIssueTable.html',patient_data = mod_data,diagnostic_conducted=medicine_data)
+        else:
+            flash("Invalid SSNID!")
+            return redirect(url_for('diagnosticHome'))
     return "Diagnostic Issue"
 
 @app.route('/issueDiagnostic',methods = ['POST'])
@@ -423,7 +451,7 @@ def getDiagnostic():
         #update the patient file.
         cur.execute(f'Insert into diagnosticPatient values({test_id},"{ssnId}","{test_name}");')
         conn.commit()
-        flash("Master DB and patient DB Updated")
+        flash("Test Updated")
         return render_template('diagnosticHomePage.html')
 
 @app.route('/getDiagnosticDetails',methods = ['POST'])
@@ -432,21 +460,25 @@ def getDiagnosticDetails():
         ssnId = request.form['ssnId']
         conn = mysql.connect
         cur = conn.cursor()
-        cur.execute(f'select * from patients where ssnId = {ssnId}')
-        patient_data = cur.fetchone()
-        mod_data = []
-        for i in range(len(patient_data)):
-            if i not in [0, 7, 8, 9]:
-                mod_data.append(patient_data[i])
-        cur.execute(f'select testName from diagnosticPatient where patientId = {ssnId}')
-        pat = cur.fetchall()
-        medicine_data = []
-        for i in pat:
-            cur.execute(f'select charge from diagnosticMaster where testName ="{i[0]}"')
-            charge = cur.fetchone()
-            medicine_data.append([i[0],charge[0]])
+        res = cur.execute(f'select * from patients where ssnId = {ssnId}')
+        if res ==1:
+            patient_data = cur.fetchone()
+            mod_data = []
+            for i in range(len(patient_data)):
+                if i not in [0, 7, 8, 9]:
+                    mod_data.append(patient_data[i])
+            cur.execute(f'select testName from diagnosticPatient where patientId = {ssnId}')
+            pat = cur.fetchall()
+            medicine_data = []
+            for i in pat:
+                cur.execute(f'select charge from diagnosticMaster where testName ="{i[0]}"')
+                charge = cur.fetchone()
+                medicine_data.append([i[0],charge[0]])
 
-        return render_template('diagnosticViewTable.html',patient_data = mod_data,leng=len(mod_data),diagnostic_conducted=medicine_data)
+            return render_template('diagnosticViewTable.html',patient_data = mod_data,leng=len(mod_data),diagnostic_conducted=medicine_data)
+        else:
+            flash("Invalid SSNID!")
+            return redirect(url_for('diagnosticHome'))
     return "Diagnostic Issue"
 
 if __name__ == '__main__':

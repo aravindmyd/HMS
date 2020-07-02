@@ -41,9 +41,6 @@ CREATE TABLE IF NOT EXISTS `patients` (
     PRIMARY KEY (patientId)
 );
 
-insert into patients(ssnId,patientName,patientAge,DOJ,TOB,address,city,state,status) values(4545,"naveen",45,45/05/1998,"semi","adsfasdfadsfadsf fadsfasd fasdf ","chennai","tamilcadu","active");
-select * from patients;
-
 CREATE TABLE IF NOT EXISTS `medicineMaster` (
 	`medicineId` int(11) NOT NULL AUTO_INCREMENT,
   	`medicineName` varchar(50) NOT NULL,
@@ -71,11 +68,8 @@ CREATE TABLE IF NOT EXISTS `diagnosticMaster` (
 CREATE TABLE IF NOT EXISTS `diagnosticPatient` (
 	`testId` int(11) NOT NULL,
   	`patientId` varchar(50) NOT NULL,
-    `testName` varchar(50) NOT NULL,
-      `charges` varchar(50) NOT NULL
+    `testName` varchar(50) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-select * from diagnosticPatient;
-select * from diagnosticMaster;
-Insert into diagnosticPatient values(2,"123456789");
-drop table diagnosticPatient;
+select * from patients;
+DELETE from patients where ssnId =45
